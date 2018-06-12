@@ -1,0 +1,38 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Transform: AWS::Serverless-2016-10-31
+
+Description: {{ cookiecutter.project_name }}
+
+Globals:
+  # These defaults will apply to all lambda functions in this file
+  Function:
+    Runtime: python3.6
+    Timeout: 10
+
+Resources:
+
+  {{cookiecutter.project_camel_slug}}Function:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./dist
+      Description: A {{ cookiecutter.project_name }} function
+      Handler: {{cookiecutter.project_slug}}.lambda_handlers.handler
+      Role: !GetAtt ExecutionRole.Arn
+
+
+  ExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Action: sts:AssumeRole
+            Principal:
+              Service:
+                - !Sub "lambda.${AWS::URLSuffix}"
+      Path: /service/
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+

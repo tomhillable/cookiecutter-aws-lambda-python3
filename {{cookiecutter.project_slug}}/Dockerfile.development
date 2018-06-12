@@ -1,0 +1,11 @@
+FROM amazonlinux:2017.03.1.20170812 as base
+
+ENV PATH=/env/bin:$PATH
+
+ADD . /service
+
+WORKDIR /service
+RUN yum -y install gcc python36
+RUN alternatives --set python /usr/bin/python3.6
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt -r dev_requirements.txt

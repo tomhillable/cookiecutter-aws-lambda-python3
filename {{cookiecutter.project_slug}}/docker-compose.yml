@@ -1,0 +1,46 @@
+version: '3.4'
+
+services:
+  src:
+    build:
+      context: .
+      dockerfile: Dockerfile.development
+      target: base
+    image: {{cookiecutter.project_slug}}_base
+    volumes:
+      - .:/service
+  python:
+    image: {{cookiecutter.project_slug}}_base
+    entrypoint: python
+    volumes:
+      - .:/service
+  tests:
+    image: {{cookiecutter.project_slug}}_base
+    entrypoint: python -m unittest discover tests/
+    volumes:
+      - .:/service
+    environment:
+     - USE_MOCKS=YES
+  lint:
+    image: {{cookiecutter.project_slug}}_base
+    command: |
+      sh -c "flake8 {{cookiecutter.project_slug}} tests;
+      mypy {{cookiecutter.project_slug}}/;
+      pylint --msg-template='{path}:{line}:{column}:{C} ({symbol}) {msg}' {{cookiecutter.project_slug}} tests;
+      pydocstyle --ignore=D107,D211,D212 {{cookiecutter.project_slug}} tests;
+      pycodestyle --select E,W {{cookiecutter.project_slug}} tests"
+    volumes:
+      - .:/service
+  placebo_record:
+    # Run like: docker-compose run placebo_record tests.test_{{cookiecutter.project_slug}}.{{cookiecutter.project_camel_slug}}TestCase.test_execute
+    image: {{cookiecutter.project_slug}}_base
+    entrypoint: python -m unittest
+    volumes:
+      - .:/service
+      - ~/.aws:/root/.aws
+    environment:
+     - USE_MOCKS=YES
+     - PLACEBO_PROFILE=  # Set this to your AWS profile
+     - PLACEBO_DIR=tests/placebo
+     - PLACEBO_MODE=record
+     - AWS_DEFAULT_REGION=  # Set this to your AWS region

@@ -1,0 +1,19 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+awscli = "*"
+
+[dev-packages]
+bpython = "*"
+flake8 = "*"
+mypy = "*"
+placebo = "*"
+pycodestyle = "==2.3.1"
+pydocstyle = "*"
+pylint = "*"
+
+[requires]
+python_version = "3.6"

@@ -7,16 +7,17 @@ services:
       dockerfile: Dockerfile.development
       target: base
     image: {{cookiecutter.project_slug}}_base
+    entrypoint: pipenv run
     volumes:
       - .:/service
   python:
     image: {{cookiecutter.project_slug}}_base
-    entrypoint: python
+    entrypoint: pipenv run python
     volumes:
       - .:/service
   tests:
     image: {{cookiecutter.project_slug}}_base
-    entrypoint: python -m unittest discover tests/
+    entrypoint: pipenv run python -m unittest discover tests/
     volumes:
       - .:/service
     environment:
@@ -34,7 +35,7 @@ services:
   placebo_record:
     # Run like: docker-compose run placebo_record tests.test_{{cookiecutter.project_slug}}.{{cookiecutter.project_camel_slug}}TestCase.test_execute
     image: {{cookiecutter.project_slug}}_base
-    entrypoint: python -m unittest
+    entrypoint: pipenv run python -m unittest
     volumes:
       - .:/service
       - ~/.aws:/root/.aws

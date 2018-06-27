@@ -9,7 +9,7 @@ class {{cookiecutter.project_camel_slug}}:
         pass
 
     def func1(self) -> None:
-        """Describle func1."""
+        """Describe func1."""
         pass
 
     def func2(self) -> None:
